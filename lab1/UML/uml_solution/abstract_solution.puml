@@ -1,0 +1,106 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+top to bottom direction
+
+interface ICurrency
+{
+    + GetName():string
+    + GetFactor():int
+    + GetCode():string
+    + GetRate():float
+}
+
+
+interface ICurrencyContainer
+{
+    + GetAll() : List
+    + Get(rate:string) : ICurrency
+}
+
+
+interface ITextReceiver
+{
+    + GetTextString(url : string) : String
+}
+
+interface IXMLURLToCurrencyList
+{
+    + ParseFromURL( url : string, ITextReceiver textReceiver ) : List<ICurrency>
+}
+
+abstract class Converter
+{
+    + {static} Convert(ICurrency c1, ICurrency c2, float amount) : float
+}
+
+class CurrencyInfo implements ICurrency
+{
+    - string name
+    - int factor
+    - string code
+    - float rate
+}
+
+
+class PLNBasedCurrencyRatesContainer implements ICurrencyContainer
+{
+    - PLNBasedCurrencyRatesContainer currencyDictionary = null
+    - PLNBasedCurrencyRatesContainer() : PLNBasedCurrencyRatesContainer
+    + GetInstance() : PLNBasedCurrencyRatesContainer
+    ....
+    - List<CurrencyRates> currencyRates
+    ---
+    + UpdateConversionRates(url : string, IXMLURLToCurrencyList : ) : void
+}
+
+class XMLStringDownloader implements ITextReceiver
+{
+
+}
+
+class XMLParser implements IXMLURLToCurrencyList
+{
+
+}
+
+
+class AppInterfaceHandler
+{
+    - AppInterfaceHandler classInstance = null
+    - AppInterfaceHandler() : AppInterfaceHandler
+    + GetInstance() : classInstance
+    ---
+    + PrintAll(container : ICurrencyContainer):void
+    + PrintCurrencyInfo(code : string) : void
+    + PrintMenu() : void
+}
+
+class RootManager
+{
+    - {static} Main()
+}
+
+
+PLNBasedCurrencyRatesContainer ---* RootManager
+
+AppInterfaceHandler ---> ICurrencyContainer
+RootManager *-left-- AppInterfaceHandler
+
+
+
+Converter <--- RootManager
+
+
+IXMLURLToCurrencyList ---> ICurrency
+IXMLURLToCurrencyList --right-> ITextReceiver
+
+IXMLURLToCurrencyList ---* PLNBasedCurrencyRatesContainer
+ITextReceiver ---* PLNBasedCurrencyRatesContainer
+
+ICurrency -----* PLNBasedCurrencyRatesContainer
+Converter ---> ICurrency
+
+
+
+@enduml

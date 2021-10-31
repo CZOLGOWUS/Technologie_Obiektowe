@@ -1,0 +1,69 @@
+@startuml
+
+interface ITextReceiver
+{
+    + GetTextString(url : string) : String
+}
+
+interface IParserXMLStringToCurrencyDictionary
+{
+    + Parse( docText : string ) : dictionary<float,string>
+}
+
+interface IConverts
+{
+        + Convert( money:Money, currency:String , currencyRates : IDictionaryContainer ) : Money
+}
+
+interface IDictionaryContainer
+{
+    + GetDictionary() : dictionary<float,string>
+    + GetValue(rate:string) : float
+}
+
+class XMLToStringReceiver implements ITextReceiver
+{
+
+}
+
+class XMLParser implements IParserXMLStringToCurrencyDictionary
+{
+
+}
+
+
+class Converter implements IConverts
+{
+
+}
+
+class PLNBasedCurrencyRatesDictionary implements IDictionaryContainer
+{
+    - PLNBasedCurrencyRatesDictionary currencyDictionary = null
+    - PLNBasedCurrencyRatesDictionary() : PLNBasedCurrencyRatesDictionary
+    + GetInstance() : PLNBasedCurrencyRatesDictionary
+    ....
+    - dictionary<float,string> CurrencyRates
+    ---
+    + UpdateConversionRates(parserObject:IParserXMLStringToCurrencyDictionary)
+}
+
+
+
+
+class Money
+{
+    - float Amount
+    - string currency
+
+    + GetAmount():float
+    + GetCurrency():string
+}
+
+XMLParser ---> ITextReceiver
+PLNBasedCurrencyRatesDictionary ---> IParserXMLStringToCurrencyDictionary
+Converter ---> IDictionaryContainer
+
+Converter "1" ---> "n " Money
+
+@enduml
