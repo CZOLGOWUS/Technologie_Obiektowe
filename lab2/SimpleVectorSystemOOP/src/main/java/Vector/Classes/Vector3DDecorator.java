@@ -28,18 +28,21 @@ public class Vector3DDecorator implements IVector
 
     public double cdot(IVector other)
     {
-        double[] srcV3 = srcVector.getComponents();
         double[] otherV3 = other.getComponents();
+        double[] srcVec = getComponents();
 
-        if (srcV3.length != 3)
+        if (otherV3.length == 2)
         {
-            System.out.printf("source Vector is not 3 Dimensional");
+            otherV3 = new double[] { otherV3[0],otherV3[1],0.0 };
+        }
+        else if(otherV3.length != 3)
+        {
+            System.out.print("vector is either 2 nor 3 dimensional");
             return -1;
         }
 
-        return (srcV3[1]*otherV3[2] - z*otherV3[1])
-                - (srcV3[0]*otherV3[2] - z*otherV3[0])
-                + (srcV3[0]*otherV3[1] - srcV3[1]*otherV3[0]);
+
+        return srcVec[0]*otherV3[0] + srcVec[1]*otherV3[1] + srcVec[2]*otherV3[2];
     }
 
 
@@ -51,7 +54,7 @@ public class Vector3DDecorator implements IVector
     }
 
 
-    public Vector3DDecorator cross(IVector other) throws Exception
+    public Vector3DDecorator cross(IVector other)
     {
         double[] a;
         double[] b;
@@ -69,7 +72,10 @@ public class Vector3DDecorator implements IVector
             b = tempB;
         }
         else
-            throw new Exception("vector is either 2 nor 3 dimensional");
+        {
+            System.out.print("vector is either 2 nor 3 dimensional");
+            return new Vector3DDecorator(new Vector2D(0,0),0);
+        }
 
 
         return new Vector3DDecorator(

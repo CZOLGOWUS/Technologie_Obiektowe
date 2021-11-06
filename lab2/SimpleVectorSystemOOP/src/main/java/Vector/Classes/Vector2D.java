@@ -3,23 +3,15 @@ package Vector.Classes;
 import Vector.Interfaces.IVector;
 import Vector.Interfaces.PolarInheritance2D;
 
-public class Vector2D extends Vector3DInheritance implements IVector, PolarInheritance2D
+public class Vector2D implements IVector
 {
-    private double x;
-    private double y;
+    protected double x;
+    protected double y;
 
     public Vector2D(double x, double y)
     {
         this.x = x;
         this.y = y;
-    }
-
-
-
-    @Override
-    public double getAngle()
-    {
-        return Math.atan(y/x);
     }
 
 
@@ -31,10 +23,18 @@ public class Vector2D extends Vector3DInheritance implements IVector, PolarInher
 
 
     @Override
-    public double cdot( IVector other )
+    public double cdot(IVector other)
     {
-        double[] otherComps = other.getComponents();
-        return x*otherComps[1] + y*otherComps[0];
+        double[] otherV3 = other.getComponents();
+
+        if(otherV3.length != 3 && otherV3.length != 2 )
+        {
+            System.out.printf("vector is either 2 nor 3 dimensional");
+            return -1;
+        }
+
+
+        return x*otherV3[0] + y*otherV3[1];
     }
 
 
@@ -44,40 +44,4 @@ public class Vector2D extends Vector3DInheritance implements IVector, PolarInher
         return new double[] {x,y};
     }
 
-
-    @Override
-    public Vector3DDecorator cross(IVector other) throws Exception
-    {
-        double[] a;
-        double[] b;
-
-        b = getComponents();
-        a = new double[] { b[0], b[1], 0.0};
-        b = other.getComponents();
-
-        if (b.length == 2)
-        {
-            b = new double[] {b[0], b[1], 0.0};
-        }
-        else if(b.length > 3)
-        {
-            throw new Exception("vector is either 2 nor 3 dimensional");
-        }
-
-        return new Vector3DDecorator(
-                new Vector2D(
-                        a[1]*b[2] - a[2]*b[1],
-                        a[2]*b[0] - a[0]*b[2]
-                ),
-                        a[0]*b[1] - a[1]*b[0]
-        );
-
-    }
-
-
-    @Override
-    public IVector getSrc()
-    {
-        return this;
-    }
 }

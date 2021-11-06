@@ -10,8 +10,8 @@ public class Polar2DAdapter implements IPolar2D, IVector
 
     public Polar2DAdapter(IVector srcVector)
     {
-        if(srcVector.getComponents().length != 2)
-            throw new IllegalArgumentException("vector is not 2 dimensional");
+        if(srcVector.getComponents().length < 2)
+            throw new IllegalArgumentException("vector is not 2 or more dimensional");
 
         this.srcVector = srcVector;
     }
@@ -21,6 +21,13 @@ public class Polar2DAdapter implements IPolar2D, IVector
     public double getAngle()
     {
         double[] components = srcVector.getComponents();
+
+        if(components.length < 2 )
+        {
+            System.out.printf("vector is not 2 or more dimensional");
+            return  -1;
+        }
+
         return Math.atan2(components[1],components[0])*(180/ Math.PI);
     }
 
