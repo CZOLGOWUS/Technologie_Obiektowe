@@ -28,6 +28,7 @@ public class Main {
 
 
 /*
+
 pod interfejsem IComannd
 zaimplementowac:
 - move

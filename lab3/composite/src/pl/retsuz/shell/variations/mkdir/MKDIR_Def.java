@@ -1,0 +1,44 @@
+package pl.retsuz.shell.variations.mkdir;
+
+import pl.retsuz.filesystem.Composite;
+import pl.retsuz.shell.gen.ICommand;
+import pl.retsuz.shell.variations.gen.CommandVariation;
+import pl.retsuz.shell.variations.gen.ICommandVariation;
+
+public class MKDIR_Def extends CommandVariation
+{
+
+    public MKDIR_Def(ICommandVariation next, ICommand parent)
+    {
+        super(next,parent,"");
+    }
+
+    @Override
+    public void make(String params)
+    {
+
+        Composite c = (Composite) (this.getParent().getContext().getCurrent());
+        Composite folder = new Composite();
+        folder.setName("new_folder");
+
+        try
+        {
+            int i = 1;
+            while(!c.find(folder).isEmpty())
+            {
+                folder.setName("new_folder" + "(" + i + ")" );
+                i++;
+            }
+
+            c.addElement(folder);
+            System.out.print(c.ls(""));
+        }
+        catch (Exception e)
+        {
+
+            e.printStackTrace();
+            System.out.print(e.getMessage() + "\nFile creation error");
+        }
+
+    }
+}
