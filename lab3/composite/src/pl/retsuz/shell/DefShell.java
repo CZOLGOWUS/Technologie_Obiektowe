@@ -14,6 +14,8 @@ import pl.retsuz.shell.variations.mkdir.MKDIR_Def;
 import pl.retsuz.shell.variations.mkdir.MKDIR_Path;
 import pl.retsuz.shell.variations.mkdir.MKDIR_ddot;
 import pl.retsuz.shell.variations.more.More_Def;
+import pl.retsuz.shell.variations.move.Move_Def;
+import pl.retsuz.shell.variations.remove.Remove_Def;
 import pl.retsuz.shell.variations.tree.Tree_Def;
 import pl.retsuz.shell.variations.tree.Tree_Path;
 import pl.retsuz.shell.variations.tree.Tree_ddot;
@@ -49,12 +51,14 @@ public abstract class DefShell {
         ICommandVariation mkdir_def = new MKDIR_Def(mkdir_ddot, mkdir);
         mkdir.set_default(mkdir_def);
 
-        ICommand move = new Move(ctx, ls);
-        ICommandVariation mkdir_path = new MKDIR_Path(null, mkdir);
-        ICommandVariation mkdir_ddot = new MKDIR_ddot(mkdir_path, mkdir);
-        ICommandVariation mkdir_def = new MKDIR_Def(mkdir_ddot, mkdir);
-        mkdir.set_default(mkdir_def);
+        ICommand move = new Move(ctx, mkdir);
+        ICommandVariation move_def = new Move_Def(null, move);
+        move.set_default(move_def);
 
-        return move;
+        ICommand rm = new Remove(ctx, move);
+        ICommandVariation remove_def = new Remove_Def(null, rm);
+        rm.set_default(remove_def);
+
+        return rm;
     }
 }
