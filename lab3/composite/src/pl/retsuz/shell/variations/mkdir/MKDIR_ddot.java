@@ -18,17 +18,26 @@ public class MKDIR_ddot extends CommandVariation
     {
         Composite c = (Composite) (this.getParent().getContext().getCurrent().getParent());
         Composite folder = new Composite();
-        folder.setName(params);
+        folder.setName("new_folder");
 
         try
         {
+            int i = 1;
+            while(!c.find(folder).isEmpty())
+            {
+                folder.setName("new_folder" + "(" + i + ")" );
+                i++;
+            }
+
             c.addElement(folder);
             System.out.print(c.ls(""));
         }
         catch (Exception e)
         {
+
             e.printStackTrace();
             System.out.print(e.getMessage() + "\nFile creation error");
         }
+
     }
 }

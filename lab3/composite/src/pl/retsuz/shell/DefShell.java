@@ -49,6 +49,12 @@ public abstract class DefShell {
         ICommandVariation mkdir_def = new MKDIR_Def(mkdir_ddot, mkdir);
         mkdir.set_default(mkdir_def);
 
-        return mkdir;
+        ICommand move = new Move(ctx, ls);
+        ICommandVariation mkdir_path = new MKDIR_Path(null, mkdir);
+        ICommandVariation mkdir_ddot = new MKDIR_ddot(mkdir_path, mkdir);
+        ICommandVariation mkdir_def = new MKDIR_Def(mkdir_ddot, mkdir);
+        mkdir.set_default(mkdir_def);
+
+        return move;
     }
 }
