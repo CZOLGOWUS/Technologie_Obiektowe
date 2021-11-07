@@ -1,6 +1,7 @@
 package pl.retsuz.shell.variations.remove;
 
 import pl.retsuz.filesystem.Composite;
+import pl.retsuz.filesystem.IComposite;
 import pl.retsuz.shell.gen.ICommand;
 import pl.retsuz.shell.specs.Remove;
 import pl.retsuz.shell.variations.gen.CommandVariation;
@@ -20,7 +21,8 @@ public class Remove_Def extends CommandVariation
 
         try
         {
-            current.removeElement(current.findElementByPath(params));
+            IComposite deletionElement = current.findElementByPath(params);
+            ((Composite) deletionElement.getParent()).removeElement(deletionElement);
             System.out.print(current.ls(""));
         }
         catch (Exception e)
