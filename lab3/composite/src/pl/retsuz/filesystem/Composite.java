@@ -23,6 +23,7 @@ public class Composite extends GeneralComposite{
         this.children.add(element);
     }
 
+    /** removes IComposite element which needs to be within object calling the method */
     public void removeElement(IComposite element) throws Exception {
         int index = this.children.indexOf(element);
         if(index==-1)

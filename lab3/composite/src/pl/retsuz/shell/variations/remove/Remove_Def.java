@@ -21,14 +21,16 @@ public class Remove_Def extends CommandVariation
 
         try
         {
-            IComposite deletionElement = current.findElementByPath(params);
-            ((Composite) deletionElement.getParent()).removeElement(deletionElement);
-            System.out.print(current.ls(""));
+            IComposite elementToDelete = current.findElementByPath(params);
+            Composite parentOfDeletionObject = (Composite) elementToDelete.getParent();
+            parentOfDeletionObject.removeElement(elementToDelete);
         }
         catch (Exception e)
         {
             System.out.print("Could not remove File (file doesnt exist or path is incorrect)");
         }
+
+        System.out.print(current.ls(""));
 
     }
 }
