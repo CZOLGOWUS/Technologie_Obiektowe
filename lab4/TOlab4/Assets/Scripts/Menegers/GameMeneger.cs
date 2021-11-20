@@ -26,7 +26,7 @@ public class GameMeneger : MonoBehaviour
     [SerializeField] private float probalityOfSpawnigWithSymptomns;
 
     private Bounds specimenBounds;
-    private List<GameObject> specimentList = new List<GameObject>();
+    private List<SpecimenMeneger> specimentList = new List<SpecimenMeneger>();
 
 
     public float SizeX { get => sizeX; }
@@ -48,7 +48,9 @@ public class GameMeneger : MonoBehaviour
         for( int i = 0 ; i < populationSize ; i++ )
         {
 
-            GameObject specimen = Instantiate( specimentPrefab , initialPos , Quaternion.identity );
+            GameObject specimenObject = Instantiate( specimentPrefab , initialPos , Quaternion.identity );
+            SpecimenMeneger specimen = specimenObject.GetComponent<SpecimenMeneger>();
+
             specimenMeneger = specimen.GetComponent<SpecimenMeneger>();
 
             if( specimen != null )
@@ -59,18 +61,18 @@ public class GameMeneger : MonoBehaviour
 
             if( numberOfHealthySpecimen > i )
             {
-                specimenMeneger.StartingState = probalityOfSpawnigWithResistance > Random.value
-                    ? (SpecimenState)specimenMeneger.HealtyResistant
-                    : (SpecimenState)specimenMeneger.HealthyFragile;
+                specimenMeneger.startingState = probalityOfSpawnigWithResistance > Random.value
+                    ? (SpecimenState)specimenMeneger.healtyResistant
+                    : (SpecimenState)specimenMeneger.healthyFragile;
             }
             else
             {
-                specimenMeneger.StartingState = probalityOfSpawnigWithSymptomns > Random.value
-                    ? (SpecimenState)specimenMeneger.SickSymptomatic
-                    : (SpecimenState)specimenMeneger.SickAsymptomatic;
+                specimenMeneger.startingState = probalityOfSpawnigWithSymptomns > Random.value
+                    ? (SpecimenState)specimenMeneger.sickSymptomatic
+                    : (SpecimenState)specimenMeneger.sickAsymptomatic;
             }
 
-            specimenMeneger.StartingState.EnterState( specimenMeneger );
+            specimenMeneger.startingState.EnterState( specimenMeneger );
 
             specimen.transform.position = initialPos;
 
@@ -86,7 +88,7 @@ public class GameMeneger : MonoBehaviour
     {
         for( int i = 0 ; i < specimentList.Count ; i++ )
         {
-            GameObject specimen = specimentList[i];
+            SpecimenMeneger specimen = specimentList[i];
 
             if( specimen == null )
                 continue;
@@ -102,7 +104,7 @@ public class GameMeneger : MonoBehaviour
                 {
                     specimentList.Remove( specimen );
 
-                    GameObject.Destroy( specimen );
+                    GameObject.Destroy( specimen.gameObject );
 
                     specimentList.Add( SpawnSpecimen() );
 
@@ -112,12 +114,42 @@ public class GameMeneger : MonoBehaviour
     }
 
 
-    private GameObject SpawnSpecimen()
+    private SpecimenMeneger SpawnSpecimen()
     {
         Vector2 initialPos = new Vector2();
         SpecimenMeneger specimenMeneger;
 
-        switch( (int)(Random.Range(0f,4f)) )
+        initialPos = GetRandomBorderPosition();
+
+        GameObject specimen = Instantiate( specimentPrefab , initialPos , Quaternion.identity );
+        specimenMeneger = specimen.GetComponent<SpecimenMeneger>();
+
+        if( Random.value >= 0.1f )
+        {
+            specimenMeneger.startingState = probalityOfSpawnigWithResistance > Random.value
+                ? (SpecimenState)specimenMeneger.healtyResistant
+                : (SpecimenState)specimenMeneger.healthyFragile;
+        }
+        else
+        {
+            specimenMeneger.startingState = probalityOfSpawnigWithSymptomns > Random.value
+                ? (SpecimenState)specimenMeneger.sickSymptomatic
+                : (SpecimenState)specimenMeneger.sickAsymptomatic;
+        }
+
+        specimenMeneger.startingState.EnterState( specimenMeneger );
+
+        specimen.transform.position = initialPos;
+
+        return specimenMeneger;
+    }
+
+
+
+    private Vector2 GetRandomBorderPosition()
+    {
+        Vector2 initialPos;
+        switch( (int)(Random.Range( 0f , 4f )) )
         {
             case 0:
             {
@@ -134,8 +166,8 @@ public class GameMeneger : MonoBehaviour
                 initialPos.x = sizeX / 2f - specimenBounds.size.x * 0.5f;
 
                 initialPos.y = Random.Range(
-                    (-sizeY / 2f + specimenBounds.size.y * 0.5f),
-                    (sizeY / 2f - specimenBounds.size.y * 0.5f));
+                    (-sizeY / 2f + specimenBounds.size.y * 0.5f) ,
+                    (sizeY / 2f - specimenBounds.size.y * 0.5f) );
 
                 break;
             }
@@ -144,7 +176,7 @@ public class GameMeneger : MonoBehaviour
 
                 initialPos.x = Random.Range(
                     (-sizeX / 2f + specimenBounds.size.x * 0.5f) ,
-                    (sizeX / 2f - specimenBounds.size.x * 0.5f));
+                    (sizeX / 2f - specimenBounds.size.x * 0.5f) );
 
                 initialPos.y = -sizeY / 2f + specimenBounds.size.y * 0.5f;
 
@@ -155,7 +187,7 @@ public class GameMeneger : MonoBehaviour
                 initialPos.x = -sizeX / 2f + specimenBounds.size.x * 0.5f;
 
                 initialPos.y = Random.Range(
-                    (-sizeY / 2f + specimenBounds.size.y * 0.5f),
+                    (-sizeY / 2f + specimenBounds.size.y * 0.5f) ,
                     (sizeY / 2f - specimenBounds.size.y * 0.5f) );
 
                 break;
@@ -168,29 +200,7 @@ public class GameMeneger : MonoBehaviour
             }
         }
 
-        GameObject specimen = Instantiate( specimentPrefab , initialPos , Quaternion.identity );
-        specimenMeneger = specimen.GetComponent<SpecimenMeneger>();
-
-        if( Random.value >= 0.1f )
-        {
-            specimenMeneger.StartingState = probalityOfSpawnigWithResistance > Random.value
-                ? (SpecimenState)specimenMeneger.HealtyResistant
-                : (SpecimenState)specimenMeneger.HealthyFragile;
-        }
-        else
-        {
-            specimenMeneger.StartingState = probalityOfSpawnigWithSymptomns > Random.value
-                ? (SpecimenState)specimenMeneger.SickSymptomatic
-                : (SpecimenState)specimenMeneger.SickAsymptomatic;
-        }
-
-        specimenMeneger.StartingState.EnterState( specimenMeneger );
-
-        specimen.transform.position = initialPos;
-
-        specimentList.Add( specimen );
-
-        return specimen;
+        return initialPos;
     }
 
 

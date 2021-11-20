@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class SpecimenSickAsymptomaticState : SpecimenState
 {
-    private Dictionary<SpecimenMeneger,specimenNearInfo> distanceAndTimeDict;
-
 
     public override void EnterState( SpecimenMeneger specimentMeneger )
     {
-        specimentMeneger.GetComponent<SpriteRenderer>().color = new Color( 0.6f,0,0);
+        specimentMeneger.sprite.color = new Color( 0.6f,0,0);
     }
 
 
@@ -19,26 +17,35 @@ public class SpecimenSickAsymptomaticState : SpecimenState
         specimentMeneger.transform.Translate( Vector3.right * specimentMeneger.Speed * Time.deltaTime );
     }
 
-    public override void OnCollisonStay( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
+
+    public override void OnTriggerZoneStay( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
     {
-        if(distanceAndTimeDict.ContainsKey( other ) )
+        if( specimenMeneger.distanceAndTimeDict.ContainsKey( other ) )
         {
-            specimenNearInfo currentInfo = distanceAndTimeDict[other];
+            specimenNearInfo currentInfo = specimenMeneger.distanceAndTimeDict[other];
 
-            currentInfo = new specimenNearInfo(
-                distanceAndTimeDict[other].TimeWithingRange + Time.deltaTime ,
-                Vector2.Distance( specimenMeneger.transform.position , other.transform.position ) );
+            currentInfo.TimeWithingRange = specimenMeneger.distanceAndTimeDict[other].TimeWithingRange + 1;
+            currentInfo.Distance = Vector2.Distance( specimenMeneger.transform.position , other.transform.position ) < 2f;
 
-            if( currentInfo.TimeWithingRange >= 3 )
+            if( currentInfo.TimeWithingRange >= 3*25 )
             {
-
+                specimenMeneger.SwitchState( (Random.value > 0.5f ?
+                    (SpecimenState)specimenMeneger.sickSymptomatic :
+                    (SpecimenState)specimenMeneger.sickAsymptomatic ));
             }
-
+             
         }
         else
         {
-            distanceAndTimeDict[other] = new specimenNearInfo( 0f,0f);
+            specimenMeneger.distanceAndTimeDict[other] = new specimenNearInfo( 0f,true);
         }
     }
+
+
+    public override void OnTriggerZoneExit( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
+    {
+        return;
+    }
+    
 }
 

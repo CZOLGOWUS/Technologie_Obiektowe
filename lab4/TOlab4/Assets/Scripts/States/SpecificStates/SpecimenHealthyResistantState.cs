@@ -4,7 +4,7 @@ public class SpecimenHealthyResistantState : SpecimenState
 {
     public override void EnterState( SpecimenMeneger specimentMeneger )
     {
-        specimentMeneger.GetComponent<SpriteRenderer>().color = Color.green;
+        specimentMeneger.sprite.color = Color.green;
     }
     public override void UpdateState( SpecimenMeneger specimentMeneger )
     {
@@ -12,7 +12,12 @@ public class SpecimenHealthyResistantState : SpecimenState
         specimentMeneger.transform.Translate( Vector3.right * specimentMeneger.Speed * Time.deltaTime );
     }
 
-    public override void OnCollisonStay( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
+    public override void OnTriggerZoneStay( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
+    {
+        return;
+    }
+
+    public override void OnTriggerZoneExit( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
     {
         return;
     }

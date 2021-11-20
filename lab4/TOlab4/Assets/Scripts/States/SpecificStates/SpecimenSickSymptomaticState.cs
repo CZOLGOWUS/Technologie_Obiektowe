@@ -6,7 +6,7 @@ public class SpecimenSickSymptomaticState : SpecimenState
 {
     public override void EnterState( SpecimenMeneger specimentMeneger )
     {
-        specimentMeneger.GetComponent<SpriteRenderer>().color = Color.red;
+        specimentMeneger.sprite.color = Color.red;
     }
 
     public override void UpdateState( SpecimenMeneger specimentMeneger )
@@ -19,9 +19,15 @@ public class SpecimenSickSymptomaticState : SpecimenState
 
     }
 
-    public override void OnCollisonStay( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
+    public override void OnTriggerZoneStay( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
     {
 
+    }
+
+
+    public override void OnTriggerZoneExit( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
+    {
+        return;
     }
 
 }

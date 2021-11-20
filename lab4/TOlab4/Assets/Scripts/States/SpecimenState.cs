@@ -4,23 +4,25 @@ using UnityEngine;
 
 public abstract class SpecimenState
 {
-    public struct specimenNearInfo
-    {
-        private float timeWithingRange;
-        private float distance;
-
-        public specimenNearInfo( float timeWithingRange , float distance )
-        {
-            this.timeWithingRange = timeWithingRange;
-            this.distance = distance;
-        }
-
-        public float TimeWithingRange { get => timeWithingRange; set => timeWithingRange = value; }
-        public float Distance { get => distance; set => distance = value; }
-    }
 
     public abstract void EnterState( SpecimenMeneger specimenMeneger );
     public abstract void UpdateState( SpecimenMeneger specimenMeneger );
-    public abstract void OnCollisonStay( SpecimenMeneger specimenMeneger , SpecimenMeneger other);
+    public abstract void OnTriggerZoneStay( SpecimenMeneger specimenMeneger , SpecimenMeneger other );
+    public abstract void OnTriggerZoneExit( SpecimenMeneger specimenMeneger , SpecimenMeneger other );
 
+}
+
+public struct specimenNearInfo
+{
+    private float timeWithingRange;
+    private bool isWithInRange;
+
+    public specimenNearInfo( float timeWithingRange , bool isWithInRange )
+    {
+        this.timeWithingRange = timeWithingRange;
+        this.isWithInRange = isWithInRange;
+    }
+
+    public float TimeWithingRange { get => timeWithingRange; set => timeWithingRange = value; }
+    public bool Distance { get => isWithInRange; set => isWithInRange = value; }
 }
