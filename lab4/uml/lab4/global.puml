@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/object-diagram
+
+
+class specimen
+{
+    - SpecimenState : specimenState
+}
+
+class SpecimenState
+{
+
+}
+
+class SpecimenHealthyFragileState extends SpecimenState
+{
+
+}
+
+class SpecimenHealthyResistantState extends SpecimenState
+{
+
+}
+
+class SpecimenSickSymptomaticState extends SpecimenState
+{
+
+}
+
+class SpecimenSickAsymptomaticState
+
+
+
+@enduml
