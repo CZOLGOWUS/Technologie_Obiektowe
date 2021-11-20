@@ -7,7 +7,7 @@ public class GameMeneger : MonoBehaviour
     [Header( "simulationSettings" )]
     [SerializeField] private Camera mainCamera;
 
-    [Header("Board settings")]
+    [Header( "Board settings" )]
     [SerializeField] private SpriteRenderer simulationBoardSprite;
     [SerializeField] private float sizeX;
     [SerializeField] private float sizeY;
@@ -41,28 +41,31 @@ public class GameMeneger : MonoBehaviour
         simulationBoardSprite.GetComponent<BoxCollider2D>().size = new Vector2( sizeX , sizeY );
 
 
-
+        //initial spawning
         Vector2 initialPos = new Vector2();
         SpecimenMeneger specimenMeneger;
 
         for( int i = 0 ; i < populationSize ; i++ )
         {
-            initialPos.x = Random.Range( -sizeX / 2f + sizeX * 0.1f , sizeX / 2f - sizeX * 0.1f );
-            initialPos.y = Random.Range( -sizeY / 2f + sizeY * 0.1f , sizeY / 2f - sizeY * 0.1f );
 
-            GameObject specimen = Instantiate( specimentPrefab, initialPos, Quaternion.identity) ;
+            GameObject specimen = Instantiate( specimentPrefab , initialPos , Quaternion.identity );
             specimenMeneger = specimen.GetComponent<SpecimenMeneger>();
 
+            if( specimen != null )
+                specimenBounds = specimen.GetComponent<CircleCollider2D>().bounds;
 
-            if(numberOfHealthySpecimen > i)
+            initialPos.x = Random.Range( -sizeX / 2f + specimenBounds.size.x * 0.5f , sizeX / 2f - specimenBounds.size.x * 0.5f );
+            initialPos.y = Random.Range( -sizeY / 2f + specimenBounds.size.y * 0.5f , sizeY / 2f - specimenBounds.size.y * 0.5f );
+
+            if( numberOfHealthySpecimen > i )
             {
-                specimenMeneger.StartingState = probalityOfSpawnigWithResistance > Random.Range( 0f , 1f ) 
-                    ? (SpecimenState)specimenMeneger.HealtyResistant 
-                    : (SpecimenState)specimenMeneger.HealthyFragile; 
+                specimenMeneger.StartingState = probalityOfSpawnigWithResistance > Random.value
+                    ? (SpecimenState)specimenMeneger.HealtyResistant
+                    : (SpecimenState)specimenMeneger.HealthyFragile;
             }
             else
             {
-                specimenMeneger.StartingState = probalityOfSpawnigWithSymptomns > Random.Range( 0f , 1f )
+                specimenMeneger.StartingState = probalityOfSpawnigWithSymptomns > Random.value
                     ? (SpecimenState)specimenMeneger.SickSymptomatic
                     : (SpecimenState)specimenMeneger.SickAsymptomatic;
             }
@@ -75,25 +78,123 @@ public class GameMeneger : MonoBehaviour
 
         }
 
-        if( specimentList.Count > 0 )
-            specimenBounds = specimentList[0].GetComponent<CircleCollider2D>().bounds;
 
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        foreach(GameObject specimen in specimentList)
+        for( int i = 0 ; i < specimentList.Count ; i++ )
         {
-            if(IsOutsideBoard(specimen.transform, specimenBounds, simulationBoardSprite .transform) )
+            GameObject specimen = specimentList[i];
+
+            if( specimen == null )
+                continue;
+
+            if( IsOutsideBoard( specimen.transform , specimenBounds , simulationBoardSprite.transform ) )
             {
-                specimen.transform.Rotate( Vector3.forward , 180f );
+                if( Random.value > Random.value )
+                {
+                    specimen.transform.Rotate( Vector3.forward , 180f );
+                    specimen.transform.Translate( Vector3.right * specimenBounds.size.x * 0.1f );
+                }
+                else
+                {
+                    specimentList.Remove( specimen );
+
+                    GameObject.Destroy( specimen );
+
+                    specimentList.Add( SpawnSpecimen() );
+
+                }
             }
         }
     }
 
 
-    private bool IsOutsideBoard( Transform specimen ,Bounds specimenBounds , Transform board )
+    private GameObject SpawnSpecimen()
+    {
+        Vector2 initialPos = new Vector2();
+        SpecimenMeneger specimenMeneger;
+
+        switch( (int)(Random.Range(0f,4f)) )
+        {
+            case 0:
+            {
+                initialPos.x = Random.Range(
+                    (-sizeX / 2f + specimenBounds.size.x * 0.5f) ,
+                    (sizeX / 2f - specimenBounds.size.x * 0.5f) );
+
+                initialPos.y = sizeY / 2f - specimenBounds.size.y * 0.5f;
+
+                break;
+            }
+            case 1:
+            {
+                initialPos.x = sizeX / 2f - specimenBounds.size.x * 0.5f;
+
+                initialPos.y = Random.Range(
+                    (-sizeY / 2f + specimenBounds.size.y * 0.5f),
+                    (sizeY / 2f - specimenBounds.size.y * 0.5f));
+
+                break;
+            }
+            case 2:
+            {
+
+                initialPos.x = Random.Range(
+                    (-sizeX / 2f + specimenBounds.size.x * 0.5f) ,
+                    (sizeX / 2f - specimenBounds.size.x * 0.5f));
+
+                initialPos.y = -sizeY / 2f + specimenBounds.size.y * 0.5f;
+
+                break;
+            }
+            case 3:
+            {
+                initialPos.x = -sizeX / 2f + specimenBounds.size.x * 0.5f;
+
+                initialPos.y = Random.Range(
+                    (-sizeY / 2f + specimenBounds.size.y * 0.5f),
+                    (sizeY / 2f - specimenBounds.size.y * 0.5f) );
+
+                break;
+            }
+            default:
+            {
+                initialPos.x = Random.Range( -sizeX / 2f + specimenBounds.size.x * 0.5f , sizeX / 2f - specimenBounds.size.x * 0.5f );
+                initialPos.y = Random.Range( -sizeY / 2f + specimenBounds.size.y * 0.5f , sizeY / 2f - specimenBounds.size.y * 0.5f );
+                break;
+            }
+        }
+
+        GameObject specimen = Instantiate( specimentPrefab , initialPos , Quaternion.identity );
+        specimenMeneger = specimen.GetComponent<SpecimenMeneger>();
+
+        if( Random.value >= 0.1f )
+        {
+            specimenMeneger.StartingState = probalityOfSpawnigWithResistance > Random.value
+                ? (SpecimenState)specimenMeneger.HealtyResistant
+                : (SpecimenState)specimenMeneger.HealthyFragile;
+        }
+        else
+        {
+            specimenMeneger.StartingState = probalityOfSpawnigWithSymptomns > Random.value
+                ? (SpecimenState)specimenMeneger.SickSymptomatic
+                : (SpecimenState)specimenMeneger.SickAsymptomatic;
+        }
+
+        specimenMeneger.StartingState.EnterState( specimenMeneger );
+
+        specimen.transform.position = initialPos;
+
+        specimentList.Add( specimen );
+
+        return specimen;
+    }
+
+
+    private bool IsOutsideBoard( Transform specimen , Bounds specimenBounds , Transform board )
     {
         return
             specimen.position.x + specimenBounds.size.x * 0.5f > board.position.x + board.localScale.x / 2f ||
