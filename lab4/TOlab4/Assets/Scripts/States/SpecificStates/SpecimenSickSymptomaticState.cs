@@ -16,7 +16,7 @@ public class SpecimenSickSymptomaticState : SpecimenState
         Transform specimenTransform = specimentMeneger.transform;
 
         specimenTransform.Rotate( Vector3.forward , Random.Range( -20f , 20f ) );
-        specimenTransform.Translate( Vector3.right * specimentMeneger.Speed * Time.deltaTime );
+        specimenTransform.Translate( Vector3.right * Random.Range( specimentMeneger.sickSymptomaticMinSpeed,specimentMeneger.sickSymptomaticMaxSpeed) * Time.deltaTime );
 
         if(specimentMeneger.infectionTimeCount >= specimentMeneger.InfectionTime )
         {

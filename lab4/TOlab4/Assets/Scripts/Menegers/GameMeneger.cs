@@ -30,6 +30,10 @@ public class GameMeneger : MonoBehaviour
     private CircleCollider2D specimenCircleCollider;
     private List<SpecimenMeneger> specimentList = new List<SpecimenMeneger>();
 
+    [Space]
+    [Header("Continuous spawn settings")]
+    [Range(0f, 1f)]
+    [SerializeField] public float sickSpecimenSpawnProbability;
 
     public float SizeX { get => sizeX; }
     public float SizeY { get => sizeY; }
@@ -142,7 +146,7 @@ public class GameMeneger : MonoBehaviour
         GameObject specimen = Instantiate( specimentPrefab , initialPos ,Quaternion.identity );
         specimenMeneger = specimen.GetComponent<SpecimenMeneger>();
 
-        if( Random.value >= 0.1f )
+        if( Random.value >= sickSpecimenSpawnProbability)
         {
             specimenMeneger.currentState = probalityOfSpawnigWithResistance > Random.value
                 ? (SpecimenState)specimenMeneger.healtyResistant

@@ -12,7 +12,7 @@ public class SpecimenHealthyFragileState : SpecimenState
     public override void UpdateState( SpecimenMeneger specimentMeneger)
     {
         specimentMeneger.transform.Rotate(Vector3.forward,Random.Range(-20f,20f));
-        specimentMeneger.transform.Translate( Vector3.right * specimentMeneger.Speed * Time.deltaTime );
+        specimentMeneger.transform.Translate( Vector3.right * Random.Range(specimentMeneger.healthyFragileMinSpeed, specimentMeneger.healthyFragileMaxSpeed) * Time.deltaTime );
     }
 
 

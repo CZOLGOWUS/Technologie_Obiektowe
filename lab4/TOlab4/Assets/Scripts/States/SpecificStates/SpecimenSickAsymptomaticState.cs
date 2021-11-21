@@ -17,7 +17,7 @@ public class SpecimenSickAsymptomaticState : SpecimenState
         Transform specimenTransform = specimentMeneger.transform;
 
         specimenTransform.Rotate( Vector3.forward , Random.Range( -20f , 20f ) );
-        specimenTransform.Translate( Vector3.right * specimentMeneger.Speed * Time.deltaTime );
+        specimenTransform.Translate( Vector3.right * Random.Range(specimentMeneger.sickAsymptomaticMinSpeed, specimentMeneger.sickAsymptomaticMaxSpeed) * Time.deltaTime );
 
         if (specimentMeneger.infectionTimeCount >= specimentMeneger.InfectionTime)
         {
@@ -39,7 +39,7 @@ public class SpecimenSickAsymptomaticState : SpecimenState
 
             specimenMeneger.specimensInInfectionRadiusDict[other]++;
 
-            if (specimenMeneger.specimensInInfectionRadiusDict[other] >= specimenMeneger.timeToInfect )
+            if (specimenMeneger.specimensInInfectionRadiusDict[other] >= specimenMeneger.timeToInfect && Random.value > 0.5f)
             {
                 other.SwitchState( (Random.value > 0.5f ?
                     (SpecimenState)specimenMeneger.sickSymptomatic :

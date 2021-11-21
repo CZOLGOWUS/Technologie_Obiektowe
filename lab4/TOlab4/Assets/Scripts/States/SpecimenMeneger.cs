@@ -30,18 +30,17 @@ public class SpecimenMeneger : MonoBehaviour
 
 
     [Header("Speed diffrences")]
-    [SerializeField] private float healthyResistantMaxSpeed;
-    [SerializeField] private float healthyResistantMinSpeed;
+    [SerializeField] public float healthyResistantMinSpeed;
+    [SerializeField] public float healthyResistantMaxSpeed;
     [Space]
-    [SerializeField] private float sickSyptomaticMaxSpeed;
-    [SerializeField] private float healthySyptomaticMinSpeed;
+    [SerializeField] public float healthyFragileMinSpeed;
+    [SerializeField] public float healthyFragileMaxSpeed;
     [Space]
-    [SerializeField] private float sickAssyptomaticMaxSpeed;
-    [SerializeField] private float sickAssyptomaticMinSpeed;
+    [SerializeField] public float sickSymptomaticMinSpeed;
+    [SerializeField] public float sickSymptomaticMaxSpeed;
     [Space]
-    [SerializeField] private float healthyFragileMaxSpeed;
-    [SerializeField] private float healthyFragileMinSpeed;
-
+    [SerializeField] public float sickAsymptomaticMinSpeed;
+    [SerializeField] public float sickAsymptomaticMaxSpeed;
 
 
 
@@ -50,6 +49,7 @@ public class SpecimenMeneger : MonoBehaviour
     // Start is called before the first frame update
     void OnEnable()
     {
+        infectionTime =  (int)(infectionTime * UnityEngine.Random.Range(2f/3f,1f));
         sprite = GetComponent<SpriteRenderer>();
 
         GetComponentInChildren<CircleCollider2D>().radius = 1f;
