@@ -99,4 +99,18 @@ public class SpecimenMeneger : MonoBehaviour
         print( text );
     }
 
+    public SpecimenMemento StoreInMemento()
+    {
+        return new SpecimenMemento(currentState,this.transform);
+    }
+
+    public void RestoreFromMemento(SpecimenMemento memento)
+    {
+        currentState = memento.State;
+        currentState.EnterState(this);
+        this.transform.position = memento.Transform.position;
+        transform.rotation = memento.Transform.rotation;
+    }
+
+
 }
