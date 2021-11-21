@@ -18,6 +18,6 @@ public class InfectionRadiusDelegateHelper : MonoBehaviour
     private void OnTriggerExit2D( Collider2D collider )
     {
         if( collider.CompareTag( "Specimen" ) )
-            OnInfectionRangeStay( collider );
+            OnInfectionRangeExit( collider );
     }
 }

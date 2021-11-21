@@ -8,43 +8,67 @@ public class SpecimenSickAsymptomaticState : SpecimenState
     public override void EnterState( SpecimenMeneger specimentMeneger )
     {
         specimentMeneger.sprite.color = new Color( 0.6f,0,0);
+        specimentMeneger.infectionTimeCount = 0;
     }
 
 
     public override void UpdateState( SpecimenMeneger specimentMeneger )
     {
-        specimentMeneger.transform.Rotate( Vector3.forward , Random.Range( -20f , 20f ) );
-        specimentMeneger.transform.Translate( Vector3.right * specimentMeneger.Speed * Time.deltaTime );
+        Transform specimenTransform = specimentMeneger.transform;
+
+        specimenTransform.Rotate( Vector3.forward , Random.Range( -20f , 20f ) );
+        specimenTransform.Translate( Vector3.right * specimentMeneger.Speed * Time.deltaTime );
+
+        if (specimentMeneger.infectionTimeCount >= specimentMeneger.InfectionTime)
+        {
+            specimentMeneger.SwitchState(specimentMeneger.healtyResistant);
+            specimentMeneger.infectionTimeCount = 0;
+        }
+        else
+        {
+            specimentMeneger.infectionTimeCount++;
+        }
+
     }
 
 
     public override void OnTriggerZoneStay( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
     {
-        if( specimenMeneger.distanceAndTimeDict.ContainsKey( other ) )
+        if( specimenMeneger.specimensInInfectionRadiusDict.ContainsKey( other ) )
         {
-            specimenNearInfo currentInfo = specimenMeneger.distanceAndTimeDict[other];
 
-            currentInfo.TimeWithingRange = specimenMeneger.distanceAndTimeDict[other].TimeWithingRange + 1;
-            currentInfo.Distance = Vector2.Distance( specimenMeneger.transform.position , other.transform.position ) < 2f;
+            specimenMeneger.specimensInInfectionRadiusDict[other]++;
 
-            if( currentInfo.TimeWithingRange >= 3*25 )
+            if (specimenMeneger.specimensInInfectionRadiusDict[other] >= specimenMeneger.timeToInfect )
             {
-                specimenMeneger.SwitchState( (Random.value > 0.5f ?
+                other.SwitchState( (Random.value > 0.5f ?
                     (SpecimenState)specimenMeneger.sickSymptomatic :
                     (SpecimenState)specimenMeneger.sickAsymptomatic ));
+
+                specimenMeneger.specimensInInfectionRadiusDict.Remove(other);
+            }
+            else if(!(other.currentState is SpecimenHealthyFragileState))
+            {
+                specimenMeneger.specimensInInfectionRadiusDict.Remove(other);
             }
              
         }
-        else
+        else if(other.currentState is SpecimenHealthyFragileState)
         {
-            specimenMeneger.distanceAndTimeDict[other] = new specimenNearInfo( 0f,true);
+            specimenMeneger.specimensInInfectionRadiusDict[other] = 0f;
         }
     }
 
 
     public override void OnTriggerZoneExit( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
     {
-        return;
+        if (specimenMeneger.specimensInInfectionRadiusDict.ContainsKey(other))
+        {
+
+            specimenMeneger.specimensInInfectionRadiusDict.Remove(other);
+
+        }
+
     }
     
 }

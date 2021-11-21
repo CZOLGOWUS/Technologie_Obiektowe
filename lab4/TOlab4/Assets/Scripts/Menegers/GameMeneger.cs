@@ -1,6 +1,8 @@
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
+
+
 
 public class GameMeneger : MonoBehaviour
 {
@@ -11,13 +13,13 @@ public class GameMeneger : MonoBehaviour
     [SerializeField] private SpriteRenderer simulationBoardSprite;
     [SerializeField] private float sizeX;
     [SerializeField] private float sizeY;
+    private Vector2 boardCenter;
 
 
     [Header( "Speciment population settings" )]
     [SerializeField] private GameObject specimentPrefab;
     [SerializeField] private int populationSize;
 
-    [Range( 0 , 300 )]
     [Tooltip( "number of Sick Specimen will be calculated using population size" )]
     [SerializeField] private int numberOfHealthySpecimen;
     [Range( 0f , 1f )]
@@ -25,7 +27,7 @@ public class GameMeneger : MonoBehaviour
     [Range( 0f , 1f )]
     [SerializeField] private float probalityOfSpawnigWithSymptomns;
 
-    private Bounds specimenBounds;
+    private CircleCollider2D specimenCircleCollider;
     private List<SpecimenMeneger> specimentList = new List<SpecimenMeneger>();
 
 
@@ -35,7 +37,7 @@ public class GameMeneger : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         simulationBoardSprite.transform.localScale = new Vector2( sizeX , sizeY );
         simulationBoardSprite.GetComponent<BoxCollider2D>().size = new Vector2( sizeX , sizeY );
@@ -43,36 +45,40 @@ public class GameMeneger : MonoBehaviour
 
         //initial spawning
         Vector2 initialPos = new Vector2();
-        SpecimenMeneger specimenMeneger;
+        boardCenter = simulationBoardSprite.GetComponent<Collider2D>().bounds.center;
 
         for( int i = 0 ; i < populationSize ; i++ )
         {
+            SpecimenMeneger specimen = Instantiate(specimentPrefab, initialPos, Quaternion.identity).GetComponent<SpecimenMeneger>();
 
-            GameObject specimenObject = Instantiate( specimentPrefab , initialPos , Quaternion.identity );
-            SpecimenMeneger specimen = specimenObject.GetComponent<SpecimenMeneger>();
-
-            specimenMeneger = specimen.GetComponent<SpecimenMeneger>();
-
-            if( specimen != null )
-                specimenBounds = specimen.GetComponent<CircleCollider2D>().bounds;
-
-            initialPos.x = Random.Range( -sizeX / 2f + specimenBounds.size.x * 0.5f , sizeX / 2f - specimenBounds.size.x * 0.5f );
-            initialPos.y = Random.Range( -sizeY / 2f + specimenBounds.size.y * 0.5f , sizeY / 2f - specimenBounds.size.y * 0.5f );
-
-            if( numberOfHealthySpecimen > i )
+            if (specimen != null)
             {
-                specimenMeneger.startingState = probalityOfSpawnigWithResistance > Random.value
-                    ? (SpecimenState)specimenMeneger.healtyResistant
-                    : (SpecimenState)specimenMeneger.healthyFragile;
+                specimenCircleCollider = specimen.transform.GetComponent<CircleCollider2D>();
+                specimenCircleCollider.radius = 0.1f;
+                
             }
             else
             {
-                specimenMeneger.startingState = probalityOfSpawnigWithSymptomns > Random.value
-                    ? (SpecimenState)specimenMeneger.sickSymptomatic
-                    : (SpecimenState)specimenMeneger.sickAsymptomatic;
+                throw new System.Exception("specimen bounds or circle collider 2D is null");
             }
 
-            specimenMeneger.startingState.EnterState( specimenMeneger );
+            initialPos.x = Random.Range( -sizeX / 2f + specimenCircleCollider.radius * 0.5f , sizeX / 2f - specimenCircleCollider.radius * 0.5f );
+            initialPos.y = Random.Range( -sizeY / 2f + specimenCircleCollider.radius * 0.5f , sizeY / 2f - specimenCircleCollider.radius * 0.5f );
+
+            if( numberOfHealthySpecimen > i )
+            {
+                specimen.currentState = probalityOfSpawnigWithResistance > Random.value
+                    ? (SpecimenState)specimen.healtyResistant
+                    : (SpecimenState)specimen.healthyFragile;
+            }
+            else
+            {
+                specimen.currentState = probalityOfSpawnigWithSymptomns > Random.value
+                    ? (SpecimenState)specimen.sickSymptomatic
+                    : (SpecimenState)specimen.sickAsymptomatic;
+            }
+
+            specimen.currentState.EnterState(specimen);
 
             specimen.transform.position = initialPos;
 
@@ -90,15 +96,24 @@ public class GameMeneger : MonoBehaviour
         {
             SpecimenMeneger specimen = specimentList[i];
 
+            //temp fix for null refs
             if( specimen == null )
+            {
+                specimentList.Remove(specimen);
                 continue;
+            }
+            else if(specimenCircleCollider == null)
+            {
+                specimentList.Remove(specimen);
+                continue;
+            }
 
-            if( IsOutsideBoard( specimen.transform , specimenBounds , simulationBoardSprite.transform ) )
+            if( IsOutsideBoard( specimen.transform , specimenCircleCollider.radius, simulationBoardSprite.transform ) )
             {
                 if( Random.value > Random.value )
                 {
                     specimen.transform.Rotate( Vector3.forward , 180f );
-                    specimen.transform.Translate( Vector3.right * specimenBounds.size.x * 0.1f );
+                    specimen.transform.Translate( Vector3.right * specimenCircleCollider.radius * 0.1f );
                 }
                 else
                 {
@@ -110,34 +125,37 @@ public class GameMeneger : MonoBehaviour
 
                 }
             }
+
+            //print(specimentList.FindAll((x) => { return x.currentState is SpecimenSickSymptomaticState; }).Count );
+
         }
+
+
     }
 
 
     private SpecimenMeneger SpawnSpecimen()
     {
-        Vector2 initialPos = new Vector2();
+        Vector2 initialPos = GetRandomBorderPosition();
         SpecimenMeneger specimenMeneger;
 
-        initialPos = GetRandomBorderPosition();
-
-        GameObject specimen = Instantiate( specimentPrefab , initialPos , Quaternion.identity );
+        GameObject specimen = Instantiate( specimentPrefab , initialPos ,Quaternion.identity );
         specimenMeneger = specimen.GetComponent<SpecimenMeneger>();
 
         if( Random.value >= 0.1f )
         {
-            specimenMeneger.startingState = probalityOfSpawnigWithResistance > Random.value
+            specimenMeneger.currentState = probalityOfSpawnigWithResistance > Random.value
                 ? (SpecimenState)specimenMeneger.healtyResistant
                 : (SpecimenState)specimenMeneger.healthyFragile;
         }
         else
         {
-            specimenMeneger.startingState = probalityOfSpawnigWithSymptomns > Random.value
+            specimenMeneger.currentState = probalityOfSpawnigWithSymptomns > Random.value
                 ? (SpecimenState)specimenMeneger.sickSymptomatic
                 : (SpecimenState)specimenMeneger.sickAsymptomatic;
         }
 
-        specimenMeneger.startingState.EnterState( specimenMeneger );
+        specimenMeneger.currentState.EnterState( specimenMeneger );
 
         specimen.transform.position = initialPos;
 
@@ -154,20 +172,20 @@ public class GameMeneger : MonoBehaviour
             case 0:
             {
                 initialPos.x = Random.Range(
-                    (-sizeX / 2f + specimenBounds.size.x * 0.5f) ,
-                    (sizeX / 2f - specimenBounds.size.x * 0.5f) );
+                    (-sizeX / 2f + specimenCircleCollider.radius * 0.5f) ,
+                    (sizeX / 2f - specimenCircleCollider.radius * 0.5f) );
 
-                initialPos.y = sizeY / 2f - specimenBounds.size.y * 0.5f;
+                initialPos.y = sizeY / 2f - specimenCircleCollider.radius * 0.5f;
 
                 break;
             }
             case 1:
             {
-                initialPos.x = sizeX / 2f - specimenBounds.size.x * 0.5f;
+                initialPos.x = sizeX / 2f - specimenCircleCollider.radius * 0.5f;
 
                 initialPos.y = Random.Range(
-                    (-sizeY / 2f + specimenBounds.size.y * 0.5f) ,
-                    (sizeY / 2f - specimenBounds.size.y * 0.5f) );
+                    (-sizeY / 2f + specimenCircleCollider.radius * 0.5f) ,
+                    (sizeY / 2f - specimenCircleCollider.radius * 0.5f) );
 
                 break;
             }
@@ -175,27 +193,27 @@ public class GameMeneger : MonoBehaviour
             {
 
                 initialPos.x = Random.Range(
-                    (-sizeX / 2f + specimenBounds.size.x * 0.5f) ,
-                    (sizeX / 2f - specimenBounds.size.x * 0.5f) );
+                    (-sizeX / 2f + specimenCircleCollider.radius * 0.5f) ,
+                    (sizeX / 2f - specimenCircleCollider.radius * 0.5f) );
 
-                initialPos.y = -sizeY / 2f + specimenBounds.size.y * 0.5f;
+                initialPos.y = -sizeY / 2f + specimenCircleCollider.radius * 0.5f;
 
                 break;
             }
             case 3:
             {
-                initialPos.x = -sizeX / 2f + specimenBounds.size.x * 0.5f;
+                initialPos.x = -sizeX / 2f + specimenCircleCollider.radius * 0.5f;
 
                 initialPos.y = Random.Range(
-                    (-sizeY / 2f + specimenBounds.size.y * 0.5f) ,
-                    (sizeY / 2f - specimenBounds.size.y * 0.5f) );
+                    (-sizeY / 2f + specimenCircleCollider.radius * 0.5f) ,
+                    (sizeY / 2f - specimenCircleCollider.radius * 0.5f) );
 
                 break;
             }
             default:
             {
-                initialPos.x = Random.Range( -sizeX / 2f + specimenBounds.size.x * 0.5f , sizeX / 2f - specimenBounds.size.x * 0.5f );
-                initialPos.y = Random.Range( -sizeY / 2f + specimenBounds.size.y * 0.5f , sizeY / 2f - specimenBounds.size.y * 0.5f );
+                initialPos.x = Random.Range( -sizeX / 2f + specimenCircleCollider.radius * 0.5f , sizeX / 2f - specimenCircleCollider.radius * 0.5f );
+                initialPos.y = Random.Range( -sizeY / 2f + specimenCircleCollider.radius * 0.5f , sizeY / 2f - specimenCircleCollider.radius * 0.5f );
                 break;
             }
         }
@@ -204,13 +222,14 @@ public class GameMeneger : MonoBehaviour
     }
 
 
-    private bool IsOutsideBoard( Transform specimen , Bounds specimenBounds , Transform board )
+    private bool IsOutsideBoard( Transform specimen , float radius , Transform board )
     {
+
         return
-            specimen.position.x + specimenBounds.size.x * 0.5f > board.position.x + board.localScale.x / 2f ||
-            specimen.position.x - specimenBounds.size.x * 0.5f < board.position.x - board.localScale.x / 2f ||
-            specimen.position.y - specimenBounds.size.y * 0.5f < board.position.y - board.localScale.x / 2f ||
-            specimen.position.y + specimenBounds.size.y * 0.5f > board.position.y + board.localScale.x / 2f;
+            specimen.position.x + radius> board.position.x + board.localScale.x / 2f ||
+            specimen.position.x - radius < board.position.x - board.localScale.x / 2f ||
+            specimen.position.y - radius < board.position.y - board.localScale.x / 2f ||
+            specimen.position.y + radius  > board.position.y + board.localScale.x / 2f;
     }
 
 }

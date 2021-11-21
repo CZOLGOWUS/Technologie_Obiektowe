@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SecimenHealthyFragileState : SpecimenState
+public class SpecimenHealthyFragileState : SpecimenState
 {
 
     public override void EnterState( SpecimenMeneger specimentMeneger )
@@ -15,10 +15,12 @@ public class SecimenHealthyFragileState : SpecimenState
         specimentMeneger.transform.Translate( Vector3.right * specimentMeneger.Speed * Time.deltaTime );
     }
 
+
     public override void OnTriggerZoneStay( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
     {
         return;
     }
+
 
     public override void OnTriggerZoneExit( SpecimenMeneger specimenMeneger , SpecimenMeneger other )
     {

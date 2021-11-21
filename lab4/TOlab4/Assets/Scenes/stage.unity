@@ -748,9 +748,9 @@ MonoBehaviour:
   sizeY: 100
   specimentPrefab: {fileID: 8177364025583447292, guid: b39675e717f6f9341b5e9e6ccf08d340, type: 3}
   populationSize: 100
-  numberOfHealthySpecimen: 90
-  probalityOfSpawnigWithResistance: 0.517
-  probalityOfSpawnigWithSymptomns: 0.53
+  numberOfHealthySpecimen: 50
+  probalityOfSpawnigWithResistance: 0
+  probalityOfSpawnigWithSymptomns: 0.447
 --- !u!4 &1424984156
 Transform:
   m_ObjectHideFlags: 0
