@@ -14,11 +14,7 @@ public class SpecimenSickAsymptomaticState : SpecimenState
 
     public override void UpdateState( SpecimenMeneger specimentMeneger )
     {
-        Transform specimenTransform = specimentMeneger.transform;
-
-        specimenTransform.Rotate( Vector3.forward , Random.Range( -20f , 20f ) );
-        specimenTransform.Translate( Vector3.right * Random.Range(specimentMeneger.sickAsymptomaticMinSpeed, specimentMeneger.sickAsymptomaticMaxSpeed) * Time.deltaTime );
-
+        Move(specimentMeneger,specimentMeneger.sickAsymptomaticMinSpeed,specimentMeneger.sickAsymptomaticMaxSpeed);
         if (specimentMeneger.infectionTimeCount >= specimentMeneger.InfectionTime)
         {
             specimentMeneger.SwitchState(specimentMeneger.healtyResistant);

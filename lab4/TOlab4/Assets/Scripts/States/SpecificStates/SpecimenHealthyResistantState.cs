@@ -10,8 +10,7 @@ public class SpecimenHealthyResistantState : SpecimenState
 
     public override void UpdateState( SpecimenMeneger specimentMeneger )
     {
-        specimentMeneger.transform.Rotate( Vector3.forward , Random.Range( -20f , 20f ) );
-        specimentMeneger.transform.Translate( Vector3.right * Random.Range(specimentMeneger.healthyResistantMinSpeed, specimentMeneger.healthyResistantMaxSpeed) * Time.deltaTime );
+        Move(specimentMeneger, specimentMeneger.healthyResistantMinSpeed, specimentMeneger.healthyResistantMaxSpeed);
     }
 
 

@@ -18,12 +18,9 @@ public class SpecimenMeneger : MonoBehaviour
 
     public Dictionary<SpecimenMeneger , float> specimensInInfectionRadiusDict { get; set; } = new Dictionary<SpecimenMeneger , float>();
 
-    [SerializeField] private float speed = 1f;
     [SerializeField] private int infectionTime = 20 * 25;
-
     [SerializeField] public int timeToInfect;
 
-    public float Speed { get => speed; set => speed = value; }
     public SpriteRenderer sprite { get; private set; }
     public int InfectionTime { get => infectionTime; set => infectionTime = value; } // 1 frame is 1/25 of a second
     public int infectionTimeCount { get; set; } = 0;
@@ -101,15 +98,17 @@ public class SpecimenMeneger : MonoBehaviour
 
     public SpecimenMemento StoreInMemento()
     {
-        return new SpecimenMemento(currentState,this.transform);
+        return new SpecimenMemento(currentState, this.transform.position, this.transform.rotation, infectionTimeCount, specimensInInfectionRadiusDict);
     }
 
     public void RestoreFromMemento(SpecimenMemento memento)
     {
         currentState = memento.State;
+        this.transform.position = memento.Position;
+        transform.rotation = memento.Rotation;
+        specimensInInfectionRadiusDict = specimensInInfectionRadiusDict;
+
         currentState.EnterState(this);
-        this.transform.position = memento.Transform.position;
-        transform.rotation = memento.Transform.rotation;
     }
 
 

@@ -1009,7 +1009,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 487738556}
         m_TargetAssemblyTypeName: TimeScaler, Assembly-CSharp
-        m_MethodName: TimeScaleBackQuarter
+        m_MethodName: normalizeTimeScale
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1484,9 +1484,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 487738556}
-        m_TargetAssemblyTypeName: TimeScaler, Assembly-CSharp
-        m_MethodName: TimeScaleBackQuarter
+      - m_Target: {fileID: 1424984155}
+        m_TargetAssemblyTypeName: GameMeneger, Assembly-CSharp
+        m_MethodName: SaveSimulationState
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1617,9 +1617,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 487738556}
-        m_TargetAssemblyTypeName: TimeScaler, Assembly-CSharp
-        m_MethodName: TimeScaleBackQuarter
+      - m_Target: {fileID: 1424984155}
+        m_TargetAssemblyTypeName: GameMeneger, Assembly-CSharp
+        m_MethodName: RestoreSimulationState
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

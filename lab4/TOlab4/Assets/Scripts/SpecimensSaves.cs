@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpecimenSaves
+public class SpecimensSaves
 {
-    private List<SpecimenMemento> simulationSaves;
+    public List<SpecimenMemento> simulationSaves;
+
+    public SpecimensSaves()
+    {
+        simulationSaves = new List<SpecimenMemento>();
+    }
 
     public void AddSpecimenSave(SpecimenMemento specimenMemento)
     {
@@ -19,6 +24,11 @@ public class SpecimenSaves
     public int GetSpecimenCount()
     { 
         return simulationSaves.Count;
+    }
+
+    public void ClearSave()
+    {
+        simulationSaves.Clear();
     }
 
 }

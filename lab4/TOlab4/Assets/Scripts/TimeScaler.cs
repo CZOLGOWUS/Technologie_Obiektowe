@@ -17,6 +17,6 @@ public class TimeScaler : MonoBehaviour
 
     public void normalizeTimeScale()
     {
-        Time.timeScale *= 1f;
+        Time.timeScale = 1f;
     }
 }
