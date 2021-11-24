@@ -4,7 +4,7 @@ public class SpecimenHealthyResistantState : SpecimenState
 {
     public override void EnterState( SpecimenMeneger specimentMeneger )
     {
-        specimentMeneger.sprite.color = Color.green;
+        specimentMeneger.sprite.color = new Color(0.5f, 0.8f, .5f);
     }
 
 
