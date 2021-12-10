@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Vector-2D" Version="1.1.0.88" />
+    <PackageReference Include="WindowsBase_Core.STW" Version="4.0.30319.1" />
+  </ItemGroup>
+
+</Project>

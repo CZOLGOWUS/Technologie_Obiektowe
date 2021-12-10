@@ -1303,7 +1303,7 @@ MonoBehaviour:
   sizeX: 100
   sizeY: 100
   specimentPrefab: {fileID: 8177364025583447292, guid: b39675e717f6f9341b5e9e6ccf08d340, type: 3}
-  populationSize: 75
+  populationSize: 150
   numberOfHealthySpecimen: 60
   probalityOfSpawnigWithResistance: 0.288
   probalityOfSpawnigWithSymptomns: 0.646

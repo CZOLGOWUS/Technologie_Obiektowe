@@ -1,0 +1,83 @@
+@startuml
+'https://plantuml.com/object-diagram
+
+class Program
+{
+
+}
+
+interface IPeopleDatabase
+{
+    + AddPerson(Name name, posx, posy) : void
+    + AddPerson(string name, posx, posy) : void
+
+}
+
+class PeopleDataBaseProxy implements IPeopleDatabase
+{
+    + AddPerson(Name name, posx, posy) : void
+    - FormatInput(Name) : Name;
+}
+
+class PeopleDatabase implements IPeopleDatabase
+{
+    - List<Person> personsList
+}
+
+interface IPerson
+{
+}
+
+class Person implements IPerson
+{
+    - posX : double
+    - posY : double
+    - name : List<Name>
+}
+
+
+interface INamesFactory
+{
+    + GetName(string name) : Name
+    + ShowAllNames() : void
+}
+
+class NamesFactory implements INamesFactory
+{
+    - List<Name> savedNames
+
+    + GetName(string[] name) : Name
+    + GetName(List<string> name) : Name
+
+}
+
+note left of NamesFactory::GetName
+    foreach(Name n in savedNames)
+        if(string is in savedNames)
+end note
+
+
+
+class Name
+{
+    - nameFactory : INamesFactory
+    - name : string
+}
+
+
+Program  *-- IPeopleDatabase
+Program  *-- PeopleDataBaseProxy
+
+PeopleDataBaseProxy o--> PeopleDatabase
+PeopleDatabase --> INamesFactory
+
+
+INamesFactory o--> Name
+IPerson --> Name
+
+
+
+
+
+
+@enduml

@@ -1,0 +1,131 @@
+@startuml
+'https://plantuml.com/object-diagram
+
+
+class Main
+{
+
+}
+
+interface IEnumerable
+{
+
+}
+
+interface IEnumerator
+{
+
+}
+node "FireStationSystem" {
+    class FireTruck
+    {
+        IFireTruckState currentState;
+        SwitchState(IFireTruckState state) : void
+    }
+
+    class FireStationEnumerator implements IEnumerator
+    {
+
+    }
+
+    interface IFireTruckState
+    {
+        IsReady(FireTruck fireTruck) : bool
+        Update(FireTruck fireTruck) : void
+    }
+
+    class FireTruckReadyState implements IFireTruckState
+    {
+
+    }
+
+    class FireTruckBusyState implements IFireTruckState
+    {
+
+    }
+
+    class FireStation implements IEnumerable
+    {
+        List<FireTruck> fireTruckList
+    }
+
+    class FireStationCenter
+    {
+
+    }
+
+    FireTruck --> IFireTruckState
+
+    FireStation --> FireTruck
+    FireStation ..> FireStationEnumerator
+
+}
+
+class FireStationCenter implements IObserver
+
+node "IncidentSystem"{
+
+    class IncidentManager
+    {
+        CreateIncident(): IIncident
+    }
+
+    interface IIncidentCreationBehaviour
+    {
+        CreateIncident() : IIncident
+    }
+
+    class RandomIncidentCreation implements IIncidentCreationBehaviour
+    {
+
+    }
+
+    interface IIncident
+    {
+        +GetStatus()
+    }
+
+    class Incident implements IIncident
+    {
+
+    }
+
+    IncidentManager --> IIncidentCreationBehaviour
+
+}
+
+class Incident implements IObservable
+
+RandomIncidentCreation o-- IIncident
+
+node "Map"{
+
+    class Map
+    {
+        {static} Boundaries
+    }
+
+}
+
+interface IObservable
+{
+    - observators : List<IObserver>
+    + AddObserver(IObserver) : void
+    + RemoveObserver(IObserver) : void
+    + NotifyObserver(IObserver) : void
+    + NotifyAll() : void
+}
+
+interface IObserver
+{
+    + Update(data) : void
+}
+
+Main o-- Map
+Main *--- FireStationCenter
+FireStationCenter *-- FireStation
+Main *--- IncidentManager
+
+
+
+@enduml
